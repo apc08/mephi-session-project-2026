@@ -1,0 +1,70 @@
+    1  вта
+    2  sudo dnf install -y @workstation-product-environment
+    3  systemctl set-default graphical.target
+    4  sudo reboot
+    5  ды
+    6  ls
+    7  nmcli con mod "netplan-enp0s3" ipv4.addresses 192.168.1.100/24
+    8  nmcli con show
+    9  ls
+   10  ls -la
+   11  lsblk
+   12  sudo parted /dev/sdb --script mklabel gpt
+   13  sudo parted /dev/sdb --script mkpart primary ext4 0% 100%
+   14  sudo mkfs.ext4 -L MEPHI_DATA /dev/sdb1
+   15  sudo mkdir -p /data/mephi-web
+   16  echo 'LABEL=MEPHI_DATA /data/mephi-web ext4 defaults 0 0' | sudo tee -a /etc/fstab
+   17  sudo mount -a
+   18  df -h /data/mephi-web
+   19  sudo systemctl start nginx
+   20  sudo systemctl enable nginx
+   21  systemctl status nginx
+   22  journalctl -u nginx --since "5 minutes ago" --no-pager > /tmp/nginx_recent_logs.txt
+   23  cat /tmp/nginx_recent_logs.txt
+   24  sudo useradd mephi-admin
+   25  sudo groupadd mephi-devs
+   26  sudo usermod -aG mephi-devs mephi-admin
+   27  sudo chown mephi-admin:mephi-devs /data/mephi-web
+   28  sudo chmod 2775 /data/mephi-web
+   29  echo "mephi-admin:P@ssw0rd2026" | sudo chpasswd
+   30  ls -ld /data/mephi-web
+   31  getenforce
+   32  sudo setenforce 1
+   33  getenforce
+   34  sudo sed -i 's/^SELINUX=.*/SELINUX=enforcing/' /etc/selinux/config~
+   35  sudo sed -i 's/^SELINUX=.*/SELINUX=enforcing/' /etc/selinux/config
+   36  sudo semanage fcontext -a -t httpd_sys_content_t "/data/mephi-web(/.*)?"
+   37  sudo restorecon -Rv /data/mephi-web
+   38  sudo chmod u-s /usr/sbin/tcpdump
+   39  sudo setcap cap_net_raw,cap_net_admin+ep /usr/sbin/tcpdump
+   40  getcap /usr/sbin/tcpdump
+   41  sudo -u mephi-admin tcpdump --help
+   42  echo "root" | sudo tee /etc/ssh/denied_users
+   43  sudo sed -i '1i auth required pam_listfile.so onerr=succeed item=user sense=deny file=/etc/ssh/denied_users' /etc/pam.d/sshd
+   44  sudo sed -i '1i auth required pam_listfile.so onerr=succeed item=user sense=deny file=/etc/ssh/denied_users' /etc/pam.d/login
+   45  sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+   46  sudo systemctl restart sshd
+   47  su - mephi-admin -c 'echo "Hello from Student: 370941" > /data/mephi-web/index.html'
+   48  su - mephi-admin -c 'echo "Hello from Student: 370941" > /data/mephi-web/index.html
+
+'
+   49  su - mephi-admin -c 'echo "Hello from Student: 370941" > /data/mephi-web/index.html
+
+'
+   50  sudo sed -i 's|root\s*/usr/share/nginx/html|root         /data/mephi-web|' /etc/nginx/nginx.conf
+   51  sudo nginx -t
+   52  sudo systemctl restart nginx
+   53  curl http://localhost
+   54  curl http://192.168.1.100
+   55  nmcli con mod "enp0s3" ipv4.addresses 192.168.1.100/24
+   56  nmcli con mod "enp0s3" ipv4.gateway 192.168.1.1
+   57  nmcli con mod "enp0s3" ipv4.dns 8.8.8.8
+   58  nmcli con mod "enp0s3" ipv4.method manual
+   59  nmcli con up "enp0s3"
+   60  hostnamectl set-hostname mephi-2026.domain.local
+   61  curl http://192.168.1.100
+   62  curl http://localhost
+   63  history
+   64  curl http://192.168.1.100
+   65  history
+   66  history > ~/project_history.txt
